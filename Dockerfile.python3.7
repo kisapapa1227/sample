@@ -1,0 +1,105 @@
+# Ubuntu 20.04をベースイメージとする
+#FROM ubuntu:20.04
+
+# ベースイメージとしてnvidia/cudaの指定バージョンを使用
+FROM nvidia/cuda:11.6.1-runtime-ubuntu20.04
+
+#FROM nvidia/cuda:10.2-runtime-ubuntu20.04
+
+# 環境変数の設定（インタラクティブな質問を避けるため）
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 必要なパッケージのインストール
+
+# # Pythonのインストール
+# RUN apt-get update && apt-get install -y python3 python3-pip
+# # Pythonのライブラリのインストール
+# RUN pip install six
+# RUN pip install rdkit rdchiral mendeleev molvs oddt 
+# RUN pip install indigo
+# RUN pip install --upgrade git+https://github.com/clinfo/kGCN.git
+
+
+RUN apt-get update --fix-missing && apt-get install -y \
+    software-properties-common \
+    build-essential \
+    libssl-dev \
+    libffi-dev \
+    python3-dev \
+    python3-pip \
+    python3-venv \
+    wget \
+    git  \
+    gnupg
+
+
+# Python 3.7のインストール
+RUN add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update && \
+    apt-get install -y python3.7 python3.7-dev python3.7-venv && \
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1 && \
+    update-alternatives --set python3 /usr/bin/python3.7
+
+
+
+# pipのアップグレードと必要なPythonパッケージのインストール
+RUN python3.7 -m pip install --upgrade pip setuptools wheel && \
+    python3.7 -m pip install tensorflow-gpu==2.4 && \
+    python3.7 -m pip install rdkit rdchiral oddt mendeleev molvs oddt\
+                             indigo\
+                             torch==1.13 torchvision==0.14.0 torchaudio==0.13 \
+                             py4j==0.10.8.1 tqdm joblib numpy scipy scikit-learn matplotlib
+
+# OpenBabel 3.0のインストール
+# 必要な依存関係のインストール
+RUN apt-get update && apt-get install -y \
+    cmake \
+    g++ \
+    libxml2-dev \
+    zlib1g-dev
+
+# OpenBabel 3.0のソースをダウンロードし、解凍
+RUN wget https://github.com/openbabel/openbabel/archive/openbabel-3-0-0.tar.gz && \
+    tar -zxvf openbabel-3-0-0.tar.gz
+
+# ビルドディレクトリに移動し、ビルドとインストールを実行(ビルドディレクトリはこれでいいのか?)
+RUN cd openbabel-openbabel-3-0-0 && \
+    mkdir build && \
+    cd build && \
+    cmake .. && \
+    make && \
+    make install
+
+# インストール後のクリーンアップ
+RUN rm -rf /openbabel-3-0-0.tar.gz /openbabel-openbabel-3-0-0
+
+# Skimageのインストール
+RUN python3.7 -m pip install scikit-image>=0.12.3
+
+# CUDA Toolkitの公式GPGキーを追加
+#RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb
+#RUN dpkg -i cuda-keyring_1.0-1_all.deb
+
+# # 新しいCUDA Toolkitの公式GPGキーの追加とリポジトリの設定
+# RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub && \
+#     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" > /etc/apt/sources.list.d/cuda.list
+
+# # CUDA Toolkit 11のインストール
+# RUN apt-get update && apt-get install -y cuda-toolkit-11-0
+
+RUN python3.7 -m pip install --upgrade git+https://github.com/clinfo/kGCN.git
+
+
+
+
+# 作業ディレクトリを設定
+WORKDIR /app
+
+# アプリケーションのコードをコピー
+COPY ./ReTReKpy /app
+
+# コンテナ起動時に実行されるコマンド
+#CMD ["python3.7", "your_script.py"]
+
+# コンテナをフォアグラウンドで実行し続ける（開発/デバッグ用）
+CMD ["tail", "-f", "/dev/null"]

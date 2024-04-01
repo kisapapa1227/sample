@@ -1,0 +1,78 @@
+# Ubuntu 20.04をベースイメージとする
+FROM ubuntu:20.04
+
+# 環境変数の設定（インタラクティブな質問を避けるため）
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 必要なパッケージのインストール
+
+RUN apt-get update --fix-missing && apt-get install -y \
+    software-properties-common \
+    build-essential \
+    libssl-dev \
+    libffi-dev \
+    python3-dev \
+    python3-pip \
+    python3-venv \
+    wget \
+    git  \
+    gnupg 
+
+# Python 3.10のインストール
+RUN add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update && \
+    apt-get install -y python3.10 python3.10-dev python3.10-venv python3-pip && \
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1 && \
+    update-alternatives --set python3 /usr/bin/python3.10
+
+# pipのアップグレードと必要なPythonパッケージのインストール
+
+RUN python3.10 -m pip install --upgrade pip setuptools wheel && \
+    python3.10 -m pip install tensorflow == 2.15 && \
+    python3.10 -m pip install rdkit rdchiral oddt mendeleev molvs \
+                             indigo\
+                             torch==1.13 torchvision==0.14.0 torchaudio==0.13 \
+                             py4j==0.10.8.1 tqdm joblib numpy scipy scikit-learn matplotlib
+
+# OpenBabel 3.0のインストール
+# 必要な依存関係のインストール
+RUN apt-get update && apt-get install -y \
+    cmake \
+    g++ \
+    libxml2-dev \
+    zlib1g-dev
+
+# OpenBabel 3.0のソースをダウンロードし、解凍
+RUN wget https://github.com/openbabel/openbabel/archive/openbabel-3-0-0.tar.gz && \
+    tar -zxvf openbabel-3-0-0.tar.gz
+
+# ビルドディレクトリに移動し、ビルドとインストールを実行(ビルドディレクトリはこれでいいのか?)
+RUN cd openbabel-openbabel-3-0-0 && \
+    mkdir build && \
+    cd build && \
+    cmake .. && \
+    make && \
+    make install
+
+# インストール後のクリーンアップ
+RUN rm -rf /openbabel-3-0-0.tar.gz /openbabel-openbabel-3-0-0
+
+# Skimageのインストール
+RUN python3.10 -m pip install scikit-image>=0.12.3
+
+RUN python3.10 -m pip install --upgrade git+https://github.com/clinfo/kGCN.git
+
+
+
+# 作業ディレクトリを設定
+WORKDIR /app
+
+# アプリケーションのコードをコピー
+COPY ./ReTReKpy /app
+
+# コンテナ起動時に実行されるコマンド
+#CMD ["python3.7", "your_script.py"]
+
+# コンテナをフォアグラウンドで実行し続ける（開発/デバッグ用）
+CMD ["tail", "-f", "/dev/null"]

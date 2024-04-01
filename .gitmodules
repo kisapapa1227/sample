@@ -1,0 +1,3 @@
+[submodule "ReTReKpy"]
+	path = ReTReKpy
+	url = https://github.com/kojima-r/ReTReKpy.git
