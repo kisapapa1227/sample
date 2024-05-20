@@ -24,8 +24,18 @@ const form = useForm({
 
 const submit = () => {
     form.post(route('login'), {
-        onFinish: () => form.reset('password'),
+        onFinish: () => {
+            if (!form.hasErrors()) {
+                
+                this.$inertia.visit(route('user'));
+            }
+            form.reset('password');  
+        }
     });
+};
+
+const redirectToRegister = () => {
+    Inertia.visit(route('register'));
 };
 </script>
 
@@ -69,6 +79,10 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
+            <div class="mt-6 text-center">
+                <span>テストテキストがここに表示されますか？</span>
+            </div>
+
             <div class="block mt-4">
                 <label class="flex items-center">
                     <Checkbox name="remember" v-model:checked="form.remember" />
@@ -90,5 +104,14 @@ const submit = () => {
                 </PrimaryButton>
             </div>
         </form>
+
+        <div class="mt-6 text-center">
+            <button
+                @click="redirectToRegister"
+                class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+                アカウント作成はこちら
+            </button>
+        </div>
     </GuestLayout>
 </template>

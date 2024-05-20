@@ -40,9 +40,11 @@ require __DIR__.'/auth.php';
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/user', [RetrekController::class, 'user'])->name('user');
-    Route::get('/results', [RetrekController::class, 'results'])->name('results');
+    Route::get('/tmp', [RetrekController::class, 'tmp'])->name('tmp');
     Route::post('/exepy', [RetrekController::class, 'exepy'])->name('exepy');
     
-    Route::post('/favorite', [RetrekController::class, 'saveFavoriteRoute'])->name('favorite');
+    Route::post('/add', [RetrekController::class, 'add'])->name('add');
+    Route::post('/remove', [RetrekController::class, 'remove'])->name('remove');
+    Route::post('/favorite', [RetrekController::class, 'favorite'])->name('favorite');
 });
 

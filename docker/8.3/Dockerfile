@@ -52,6 +52,87 @@ RUN apt-get update \
 
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.3
 
+# 環境変数の設定（インタラクティブな質問を避けるため）
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 必要なパッケージのインストール
+
+RUN apt-get update --fix-missing && apt-get install -y \
+    software-properties-common \
+    build-essential \
+    libssl-dev \
+    libffi-dev \
+    python3-dev \
+    python3-pip \
+    python3-venv \
+    wget \
+    git  \
+    gnupg 
+
+# Python 3.10のインストール
+RUN add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update && \
+    apt-get install -y python3.10 python3.10-dev python3.10-venv python3-pip && \
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1 && \
+    update-alternatives --set python3 /usr/bin/python3.10
+
+# pipのアップグレードと必要なPythonパッケージのインストール
+
+RUN python3.10 -m pip install --upgrade pip setuptools wheel && \
+    python3.10 -m pip install tensorflow==2.15 && \
+    python3.10 -m pip install \
+    rdkit==2023.9.5 \
+    rdchiral==1.1.0 \
+    oddt==0.7 \
+    mendeleev==0.15.0 \
+    MolVS==0.1.1 \
+    indigo==1.0.5 \
+    torch==2.2.1 \
+    torchaudio==2.2.1 \
+    torchvision==0.17.1 \
+    py4j==0.10.9.7 \
+    tqdm==4.66.2 \
+    joblib==1.3.2 \
+    numpy==1.25.2 \
+    scipy==1.11.4 \
+    scikit-learn==1.2.2 \
+    matplotlib==3.7.1 \
+    scikit-image==0.19.3
+
+# OpenBabel 3.0のインストール
+# 必要な依存関係のインストール
+RUN apt-get update && apt-get install -y \
+    cmake \
+    g++ \
+    libxml2-dev \
+    zlib1g-dev
+
+# OpenBabel 3.0のソースをダウンロードし、解凍
+RUN wget https://github.com/openbabel/openbabel/archive/openbabel-3-0-0.tar.gz && \
+    tar -zxvf openbabel-3-0-0.tar.gz
+
+
+# # Set permissions
+# RUN mkdir -p /var/www/html/public/images
+# RUN chown -R www-data:www-data /var/www/html/public/images
+# RUN chmod -R 775 /var/www/html/public/images
+
+# ビルドディレクトリに移動し、ビルドとインストールを実行(ビルドディレクトリはこれでいいのか?)
+RUN cd openbabel-openbabel-3-0-0 && \
+    mkdir build && \
+    cd build && \
+    cmake .. && \
+    make && \
+    make install
+
+# インストール後のクリーンアップ
+RUN rm -rf /openbabel-3-0-0.tar.gz /openbabel-openbabel-3-0-0
+
+RUN python3.10 -m pip install --upgrade git+https://github.com/clinfo/kGCN.git
+
+
+
 RUN groupadd --force -g $WWWGROUP sail
 RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
 

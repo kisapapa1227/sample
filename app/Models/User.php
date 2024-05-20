@@ -34,7 +34,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * The attributes that should be cast.¥09-1234p
      *
      * @var array<string, string>
      */
@@ -43,13 +43,9 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    
     public function favoriteRoutes()
     {
-        return $this->hasMany(FavoriteRoute::class);
-    }
-
-    public function dislikedRoutes()
-    {
-        return $this->hasMany(DislikedRoute::class);
+        return $this->hasMany(FavoriteRoute::class, 'user_id');
     }
 }

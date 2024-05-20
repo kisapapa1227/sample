@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('disliked_routes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('description'); // 苦手な経路の説明やデータを保存するカラム
-            $table->timestamps();
+        Schema::table('favorite_routes', function (Blueprint $table) {
+            $table->id()->first();
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('disliked_routes');
+        Schema::table('favorite_routes', function (Blueprint $table) {
+            $table->dropColumn('id');
+        });
     }
 };

@@ -1,6 +1,5 @@
 services:
     laravel.test:
-        user: root
         build:
             context: ./docker/8.3
             dockerfile: Dockerfile
@@ -21,6 +20,7 @@ services:
         volumes:
             - '.:/var/www/html'
             - '/var/run/docker.sock:/var/run/docker.sock' 
+        # command: /bin/bash -c "chmod -R 775 /var/www/html/public/images && chown -R www-data:www-data /var/www/html/public/images && /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"
         networks:
             - sail
         depends_on:
@@ -29,7 +29,7 @@ services:
             # - meilisearch
             - mailpit
             - selenium
-            - python
+            # - python
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -115,29 +115,29 @@ services:
             - '/dev/shm:/dev/shm'
         networks:
             - sail
-    python:
-        build:
-            context: .
-            dockerfile: Dockerfile.python3.10
-        # runtime: nvidia
-        #command: /bin/bash -c "docker run --rm --gpus all python"
-        # deploy:
-        #     resources:
-        #         reservations:
-        #             devices:
-        #                 - driver: nvidia
-        #                   count: all
-        #                   capabilities: [gpu]
-        # environment:
-        #     NVIDIA_VISIBLE_DEVICES: all
-        volumes:
-            - './ReTReKpy:/app'
-        working_dir: /app
-        networks:
-            - sail
-        depends_on:
-            - mysql
-            - redis
+    # python:
+    #     build:
+    #         context: .
+    #         dockerfile: Dockerfile.python3.10
+    #     # runtime: nvidia
+    #     #command: /bin/bash -c "docker run --rm --gpus all python"
+    #     # deploy:
+    #     #     resources:
+    #     #         reservations:
+    #     #             devices:
+    #     #                 - driver: nvidia
+    #     #                   count: all
+    #     #                   capabilities: [gpu]
+    #     # environment:
+    #     #     NVIDIA_VISIBLE_DEVICES: all
+    #     volumes:
+    #         - './ReTReKpy:/app'
+    #     working_dir: /app
+    #     networks:
+    #         - sail
+    #     depends_on:
+    #         - mysql
+    #         - redis
 networks:
     sail:
         driver: bridge
