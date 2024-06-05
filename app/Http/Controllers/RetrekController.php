@@ -92,6 +92,14 @@ class RetrekController extends Controller
         }
 
 
+        $plus_url = '/plus\.png/';
+        $replacement = '<img src="'. asset('images/plus.png') .'" alt="plus">';
+        $routes = preg_replace($plus_url, $replacement, $routes);
+
+        $arrow_url = '/arrow\.png/';
+        $replacement = '<img src="'. asset('images/arrow.png') .'" alt="arrow">';
+        $routes = preg_replace($arrow_url, $replacement, $routes);
+
         
         libxml_use_internal_errors(true);
         $doc = new \DOMDocument();
@@ -130,10 +138,10 @@ class RetrekController extends Controller
             ])->exists();
     
             if ($isFavorite) {
-                $buttonText = 'お気に入りから削除';
+                $buttonText = '削除';
                 $actionRoute =  route('remove');
             }else {
-                $buttonText ='お気に入りに追加';
+                $buttonText ='追加';
                 $actionRoute = route('add');
             }
             

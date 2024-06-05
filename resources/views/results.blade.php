@@ -33,8 +33,9 @@
         }
         .structure-img {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            align-items: center;
+            flex-wrap: nowrap;
+            gap: 5px;
         }
         .structure-img img {
             width: 100%;
@@ -52,7 +53,7 @@
         .molecule {
             display: inline-block;
             text-align: center;
-            margin: 0 8px;
+            margin: 0 4px;
             width: 100px;
         }
         .molecule img {
@@ -62,6 +63,21 @@
         .molecule p {
             margin-top: 5px; 
         }
+
+        .plus, .arrow {
+            display: inline-block;
+            text-align: center;
+            align-items: center;
+            width: 30px; 
+            margin: 0 2px;
+        }
+        .plus img, .arrow img {
+            width: 100%;
+            height: auto;
+            vertical-align: middle;
+            margin-top: -35px;
+        }
+
         .route-footer {
             display: flex;
             justify-content: flex-end; 

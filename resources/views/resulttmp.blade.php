@@ -34,8 +34,9 @@
         }
         .structure-img {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            align-items: center;
+            flex-wrap: nowrap;
+            gap: 5px;
         }
         .structure-img img {
             width: 100%;
@@ -53,7 +54,7 @@
         .molecule {
             display: inline-block;
             text-align: center;
-            margin: 0 8px;
+            margin: 0 4px;
             width: 100px;
         }
         .molecule img {
@@ -63,6 +64,21 @@
         .molecule p {
             margin-top: 5px; 
         }
+
+        .plus, .arrow {
+            display: inline-block;
+            text-align: center;
+            align-items: center;
+            width: 30px; 
+            margin: 0 2px;
+        }
+        .plus img, .arrow img {
+            width: 100%;
+            height: auto;
+            vertical-align: middle;
+            margin-top: -35px;
+        }
+
         .route-footer {
             display: flex;
             justify-content: flex-end; 
@@ -100,25 +116,29 @@
 
                 <div class="structure-img">
                     
-                    <div class="molecule">
+                    <div class="molecule reactant_molecule">
                         <img src="{{ asset('images/route_1_node_2_mol_0.png') }}" alt="Molecule 0">
                         <p>0</p>
                     </div>
 
-                    <div class="molecule">
+                    <div class="plus">
+                        <img src="{{ asset('images/plus.png') }}" alt="plus">
+                    </div>
+
+                    <div class="molecule reactant_molecule">
                         <img src="{{ asset('images/route_1_node_2_mol_1.png') }}" alt="Molecule 1">
                         <p>1</p>
                     </div>
 
-                    <div class="molecule">
+                    <div class="arrow">
+                        <img src="{{ asset('images/arrow.png') }}" alt="arrow">
+                    </div>
+
+                    <div class="molecule product_molecule">
                         <img src="{{ asset('images/route_1_node_2_mol_2.png') }}" alt="Molecule 2">
                         <p>2</p>
                     </div>
                     
-                    <div class="molecule">
-                        <img src="{{ asset('images/route_1_node_2_mol_3.png') }}" alt="Molecule 3">
-                        <p>3</p>
-                    </div>
 
                 </div>
 
