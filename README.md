@@ -13,15 +13,24 @@ git clone https://github.com/clinfo/ReTReKpy.git
 cp .env.example .env
 
 上記のコマンドで作成した.envファイルの11～16行目を以下のように修正する
+
 DB_CONNECTION=mysql
+
 DB_HOST=mysql
+
 DB_PORT=3306
+
 DB_DATABASE=retrek_ui
+
 DB_USERNAME=sail
+
 DB_PASSWORD=password
 
+
 また、.envファイルに以下の内容を追記する
+
 WWWUSER=sail
+
 WWWGROUP=sail
 
 
