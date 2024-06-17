@@ -36,6 +36,7 @@ WWWGROUP=sail
 
 
 Dockerコンテナの反映（以下をターミナルで実行）
+
 docker-compose down
 
 docker-compose rm -f
